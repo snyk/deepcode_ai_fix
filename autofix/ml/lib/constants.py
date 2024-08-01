@@ -1,0 +1,1 @@
+PARQUET_COMPRESSION = "brotli"
