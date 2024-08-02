@@ -98,8 +98,6 @@ def predict_autofix() -> None:
         raise RuntimeError("model_id can not be empty or None.")
     os.makedirs(args.training_args.output_dir, exist_ok=True)
 
-    output_arts: list = []
-
     device = (
         torch.device(f"cuda:0")
         if torch.cuda.is_available()
@@ -107,9 +105,7 @@ def predict_autofix() -> None:
     )
 
     # Step 1 - fetch the data.
-    test_datas: list[DataFrame[LabelledDataSchema]] = []
     single_test_data = DataFrame[LabelledDataSchema](pd.read_parquet("test.parquet"))
-    test_datas.append(single_test_data) # type: ignore
     model_path = str(args.model_args.model_id)
     logger.info("Finished fetching data and model")
 
@@ -167,24 +163,19 @@ def predict_autofix() -> None:
         device=None,
     )
 
-    for data_id, single_test_data, output_art in zip(
-        args.dataset_args.data_ids, test_datas, output_arts
-    ):
-        # Step 3 - generate predictions.
-        predictions = prediction_worker(
-            args, data_id, single_test_data, pipeline, model, tokenizer
-        )
-        # Step 4 - add the "predictions" column and save the final parquet.
-        assert (
-            predictions is not None
-        ), "Predictions in main process must be returned."
-        single_test_data[PredictionSchema.predictions] = predictions
-        predictions_file_path = output_art.get_predictions_file()
-        predictions_file_path.parent.mkdir(parents=True, exist_ok=True)
-        single_test_data.to_parquet(
-            str(predictions_file_path),
-            index=False,
-        )
+    # Step 3 - generate predictions.
+    predictions = prediction_worker(
+            args, args.dataset_args.data_ids, single_test_data, pipeline, model, tokenizer # type: ignore
+    )
+    # Step 4 - add the "predictions" column and save the final parquet.
+    assert (
+        predictions is not None
+    ), "Predictions in main process must be returned."
+    single_test_data[PredictionSchema.predictions] = predictions
+    single_test_data.to_parquet(
+        "predictions.parquet",
+        index=False,
+    )
 
 
 if __name__ == "__main__":

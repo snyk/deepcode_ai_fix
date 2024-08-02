@@ -101,9 +101,6 @@ def train_autofix() -> None:
     # Step 1 - fetch the data.
     with args.training_args.main_process_first():
         train_df, val_df = pd.read_parquet("train.parquet"), pd.read_parquet("validation.parquet")
-        train_df = train_df[:1]
-        val_df = val_df[:1]
-
 
     train_ds = Dataset.from_pandas(train_df)
     logger.info("Training size", num=len(train_ds))

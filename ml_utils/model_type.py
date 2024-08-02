@@ -16,14 +16,11 @@ class ModelType(Enum):
 
         if t in [
             "gpt2",
-            "codegen",
             "gpt_bigcode",
             "mosaic_gpt",
             "llama",
             "mpt",
-            "mistral",
             "mixtral",
-            "gpt_neox",
             "stablelm_epoch",
             "starcoder2",
         ]:

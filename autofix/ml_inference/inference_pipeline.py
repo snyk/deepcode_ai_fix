@@ -56,8 +56,7 @@ class _AutofixCausalInferencePipeline(transformers.TextGenerationPipeline):
         # `return_full_text=True` makes the pipeline return only newly generated text
         # (instead of the input + newly generated text).
         kwargs["return_full_text"] = False
-        with torch.no_grad():
-            return super().__call__(*args, **kwargs)
+        return super().__call__(*args, **kwargs)
 
 class _AutofixSeq2SeqPipeline(transformers.Text2TextGenerationPipeline):
     def __init__(
