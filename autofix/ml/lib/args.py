@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from dataclasses import field
-from typing import Optional, cast
+from typing import cast
 
 import transformers
 from transformers.hf_argparser import DataClassType
@@ -75,16 +75,6 @@ class ModelArgs:
     )
 
 @dataclass
-class PipelineArgs:
-    output_version: Optional[str] = field(
-        default=None,
-        metadata={
-            "help": "Optional version for all StorageArtifacts generated in a pipeline run. Must be unique."
-        },
-    )
-
-
-@dataclass
 class InferenceArgs:
     max_new_tokens: int = field(
         metadata={
@@ -113,7 +103,6 @@ class AutofixArgs:
     model_args: ModelArgs
     dataset_args: DatasetArgs
     training_args: transformers.TrainingArguments
-    pipeline_args: PipelineArgs
     inference_args: InferenceArgs
 
 
@@ -131,15 +120,13 @@ def parse_autofix_args_from_cmd() -> AutofixArgs:
     ma: ModelArgs
     da: DatasetArgs
     ta: transformers.TrainingArguments
-    pa: PipelineArgs
     ia: InferenceArgs
-    ma, da, ta, pa, ia = hf_parser.parse_args_into_dataclasses(
+    ma, da, ta, ia = hf_parser.parse_args_into_dataclasses(
         return_remaining_strings=True
     )[: len(argument_types)]
     return AutofixArgs(
         model_args=ma,
         dataset_args=da,
         training_args=ta,
-        pipeline_args=pa,
         inference_args=ia,
     )

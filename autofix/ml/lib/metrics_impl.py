@@ -73,7 +73,7 @@ class PassAtKAccuracy(FloatMetric):
 
 @final
 class ExactMatchAtKAccuracy(FloatMetric):
-    """Evaluates exact match accuracy for the best of K predictions."""
+    """Evaluates exact match accuracy for k predictions."""
 
     step_size = 2
 
@@ -106,7 +106,7 @@ class ExactMatchAtKAccuracy(FloatMetric):
 
 @final
 class SampleCount(FloatMetric):
-    """Count the number of predictions."""
+    """Counts the number of predictions."""
 
     def get_string_name(self) -> str:
         return "samples"

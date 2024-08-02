@@ -42,14 +42,11 @@ def _patch_token_ids(model: PreTrainedModel, tokenizer: PreTrainedTokenizerBase)
 
     if model.config.model_type in [
         "gpt2",
-        "codegen",
         "gpt_bigcode",
         "mosaic_gpt",
         "llama",
         "mpt",
-        "mistral",
         "mixtral",
-        "gpt_neox",
         "stablelm_epoch",
         "starcoder2",
     ]:
@@ -103,7 +100,7 @@ def train_autofix() -> None:
 
     # Step 1 - fetch the data.
     with args.training_args.main_process_first():
-        train_df, val_df = pd.read_parquet("train.parquet"), pd.read_parquet("test.parquet")
+        train_df, val_df = pd.read_parquet("train.parquet"), pd.read_parquet("validation.parquet")
         train_df = train_df[:1]
         val_df = val_df[:1]
 
@@ -157,11 +154,7 @@ def train_autofix() -> None:
         model = peft.mapping.get_peft_model(model, lora_config)
         logger.info(
             "Created peft the model",
-            r=lora_config.r,
-            alpha=lora_config.lora_alpha,
-            dp=lora_config.lora_dropout,
-            bias=lora_config.bias,
-            targets=lora_config.target_modules,
+            config=lora_config
         )
         model.print_trainable_parameters()
 

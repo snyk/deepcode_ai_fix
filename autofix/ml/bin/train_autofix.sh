@@ -48,5 +48,5 @@ dc_ai_fix_env/bin/python3 autofix/ml/bin/train_autofix.py \
     --bf16="True" \
     --preprocessing_batch_size=1000 \
     --torch_compile_mode="max-autotune" \
+    --deepspeed="autofix/ml/bin/deepspeed_config.json" \
     --dataloader_num_workers=10
-    # --deepspeed="autofix/ml/bin/deepspeed_config.json" \

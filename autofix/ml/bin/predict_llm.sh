@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [[ -z "${END_POINT}" ]]; then
+    echo "please provide an url to query in the END_POINT env variable"
+    exit 1
+fi
+
 if [[ -z "${MODEL_NAME}" ]]; then
     echo "please provide a model name in the MODEL_NAME env variable"
     exit 1
@@ -31,6 +36,7 @@ if [[ -z "${MAX_NEW_TOKENS}" ]]; then
 fi
 
 dc_ai_fix_env/bin/activate/python3 autofix/ml/bin/predict_llm.py \
+		--end_point="${END_POINT}" \
     --model_name="${MODEL_NAME}" \
     --data_id="${DATA_ID}" \
     --num_predictions="${NUM_PREDICTIONS}" \

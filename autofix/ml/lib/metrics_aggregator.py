@@ -11,24 +11,8 @@ from autofix.ml.lib.metrics_impl import SampleCount
 
 @dataclass
 class AutofixMetricAggregator:
-    """This class aggregates the fix/no-fix results of C++ binary.
+    """This class aggregates the metrics once they are in EvaluationSchema
 
-    A bird's eye view of the evaluation steps is as follows:
-    ```txt
-        ┌──────────────────────────────────────────┐
-        │ GPU VM                                   │
-        ├──────────────────────────────────────────┤
-        │ obtain predictions                       │
-        └───────────────────┬──────────────────────┘
-                            │
-        ┌───────────────────▼──────────────────────┐
-        │ CPU machine                              │
-        ├──────────────────────────────────────────┤
-        │ evaluate each prediction -> fix/no-fix   │
-        │ This class then aggregates the fix/no-fix│
-        │ results grouping by rules                │
-        └───────────────────┬──────────────────────┘
-    ```
     """
 
     def aggregate_all_rules_metrics(self, predictions: pd.DataFrame) -> pd.DataFrame:
@@ -59,38 +43,6 @@ class AutofixMetricAggregator:
                 axis=1,
             )
             result = pd.concat([result, metric_results], axis=1)
-
-        percentage_cols = result.select_dtypes(include="number").columns.difference(
-            ["samples"]
-        )
-        result[percentage_cols] = result[percentage_cols].mul(100).round(2)
-        return result
-
-    def aggregate_all_rules_metrics_per_repo(
-        self, predictions: pd.DataFrame
-    ) -> pd.DataFrame:
-        metrics: list[FloatMetric] = [
-            PassAtKAccuracy(),
-            ExactMatchAtKAccuracy(),
-            SampleCount(),
-        ]
-
-        grouped = predictions.groupby([EvaluationSchema.repo, EvaluationSchema.rule])
-
-        results = []
-
-        for (repo_id, rule_id), group in grouped:
-            group_result = pd.DataFrame({"repo_id": [repo_id], "rule_id": [rule_id]})
-
-            for m in metrics:
-                metric_results = m.compute_metric_for_predictions(group)
-                group_result = pd.concat(
-                    [group_result, pd.DataFrame([metric_results])], axis=1
-                )
-
-            results.append(group_result)
-
-        result = pd.concat(results, ignore_index=True)
 
         percentage_cols = result.select_dtypes(include="number").columns.difference(
             ["samples"]

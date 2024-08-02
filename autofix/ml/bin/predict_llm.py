@@ -9,7 +9,6 @@ import requests
 import simple_parsing
 import tqdm
 
-import autofix.ml.lib.constants as const
 import autofix.ml.lib.data_processor as preprocessor
 from autofix.ml.lib.data_schemas import PredictionSchema
 from ml_utils.distributed_training import MultiProcessLogger
@@ -19,6 +18,7 @@ logger = MultiProcessLogger()
 
 @dataclass(frozen=True)
 class LLMInferenceArgs:
+    end_point: str
     model_name: str
     model_artifact_id: str
     data_id: str
@@ -59,7 +59,7 @@ def predict_llm() -> None:
 
     for rule_id, rule_df in grouped_by_rule:
         if f"{rule_id}.parquet" in checkpointed_rules:
-            logger.warning("skipping", rule=rule_id)
+            logger.warning("Found cached results. Skipping", rule=rule_id)
             continue
 
         logger.info("running for", rule=rule_id)
@@ -86,8 +86,8 @@ def predict_llm() -> None:
                         "model": args.model_name,
                     }
                     response = requests.post(
-                        "https://hackathon-gateway.c-a.eu-west-1.polaris-prod-bo-dr3d3-1.aws.snyk-internal.net/api/chat",
-                        headers={"Authorization": "Bearer " + os.environ["AIM_AUTH"]},
+                    args.end_point,
+                        headers={"Authorization": "Bearer " + os.environ["TOKEN"]},
                         json=input_data,
                     )
                     inference_not_done = response.status_code != 200

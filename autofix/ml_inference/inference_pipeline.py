@@ -52,20 +52,7 @@ class _AutofixCausalInferencePipeline(transformers.TextGenerationPipeline):
         tokenized_input["prompt_text"] = inputs
         return tokenized_input
 
-    def postprocess(
-        self,
-        model_outputs,
-        return_type=transformers.pipelines.text2text_generation.ReturnType.TEXT,
-        clean_up_tokenization_spaces=False,
-    ):
-        return super().postprocess(
-            model_outputs, return_type, clean_up_tokenization_spaces  # type: ignore
-        )
-
     def __call__(self, *args, **kwargs):
-        # `TextGenerationPipeline` doesn't use `torch.no_grad` by default, so we
-        # have to do it ourselves.
-
         # `return_full_text=True` makes the pipeline return only newly generated text
         # (instead of the input + newly generated text).
         kwargs["return_full_text"] = False
@@ -102,22 +89,6 @@ class _AutofixSeq2SeqPipeline(transformers.Text2TextGenerationPipeline):
         )
         return tokenized_input
 
-    def postprocess(
-        self,
-        model_outputs,
-        return_type=transformers.pipelines.text2text_generation.ReturnType.TEXT,
-        clean_up_tokenization_spaces=False,
-    ):
-        return super().postprocess(
-            model_outputs, return_type, clean_up_tokenization_spaces
-        )
-
-    def __call__(self, *args, **kwargs):
-        # `Text2TextGenerationPipeline` doesn't use `torch.no_grad` by default, so we
-        # have to do it ourselves.
-        with torch.no_grad():
-            return super().__call__(*args, **kwargs)
-
 def make_inference_pipeline(
     model: PreTrainedModel,
     tokenizer: _TokenizerT,
@@ -140,17 +111,6 @@ def make_inference_pipeline(
 
     if model_type == ModelType.CAUSAL:
         if tokenizer.padding_side == "right":
-            # If we're using a causal (decoder-only) model, it's important to pad on the left, so the input looks like:
-            #   <PAD>...<PAD>fix BUG_TYPE<buggy_code>\nfixed:\n<fixed version of code >
-            #   <------------ prompt for the model -----------><--- model's output --->
-            # and NOT like:
-            #   fix BUG_TYPE<buggy_code>\nfixed:\n<PAD>...<PAD><fixed version of code >
-            #   <------------ prompt for the model -----------><--- model's output --->
-            # The reason for this is that the model is not trained to have the <PAD>...<PAD> gap between
-            # the prompt and the output, so having it during inference may severely lower the output quality.
-            # Also note that for training, the padding side doesn't really matter, because the prompt and the answer
-            # are supplied as one contiguous piece of text without any padding tokens in between.
-            # For more details, see: https://github.com/huggingface/transformers/issues/3021#issuecomment-1454266627
             logger.warning(
                 "switching the tokenizer padding side from 'right' to 'left' for a causal LM"
             )
