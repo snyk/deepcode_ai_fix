@@ -50,7 +50,6 @@ def is_multiprocessing() -> bool:
     # Both torch DDP and deepspeed set this env variable to the local rank of the process.
     # If the variable is not set, then we conclude that we're not in  multiprocessing environment,
     # and hence the process is the main (and only) process.
-    # If we switch to a different framework or to multihost training, this method should be adapted.
     return os.environ.get("LOCAL_RANK") is not None
 
 
@@ -60,7 +59,3 @@ def get_process_local_rank() -> int:
 
 def is_main_process() -> bool:
     return get_process_local_rank() == 0
-
-
-def get_world_size() -> int:
-    return int(os.environ.get("WORLD_SIZE", 1))

@@ -321,7 +321,6 @@ def main_worker(worker_id: int) -> None:
             predictions_file_path.parent.mkdir(parents=True, exist_ok=True)
             single_test_data.to_parquet(
                 str(predictions_file_path),
-                compression=const.PARQUET_COMPRESSION,
                 index=False,
             )
 

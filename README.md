@@ -46,16 +46,16 @@ Also, you might have to install torch, Nvidia drivers, and Cuda according to you
 
 ## Dataset and Models
 
-Since DeepCode AI Fix creates a competitive advantage for Snyk, it is still unclear whether we can publish the dataset and models. Since the original product improved a lot over the paper's findings, it might be possible to expose the old model and the dataset as by now it only corresponds to a small portion of the real dataset. Please stay tuned.
+Since DeepCode AI Fix creates a competitive advantage for Snyk, it is still unclear whether we can publish the dataset and models. Since the original product improved a lot over the initial publication, it might be possible to expose the old model and the dataset as by now it only corresponds to a small portion of the real dataset. Please stay tuned.
 
 Dataset schemes can be found [here](https://github.com/BBerabi/deepcode_ai_fix/blob/feat/add-training-and-inference-code/autofix/ml/lib/data_schemas.py). Below, we provide detailed explanations for each schema and field.
 
-### LabelledDataSchema
+### LabelledDataSchema (used for fine-tuning)
 
 | Fields      | Descriptions                                   |
 |-------------|-------------------------------------------------|
 | rule        | name of the static analysis rule, e.g. Sqli               |
-| message         | message returned from the static analyzer describing the found issue                         |
+| message         | message returned from the static analyzer describing the reported issue                         |
 | line_number       | line number where the static analysis report starts               |
 | line_end       | line number where the static analysis report ends               |
 | col_begin       | column number where the static analysis report starts               |
@@ -90,15 +90,15 @@ Everything under `PredictionSchema` and
 
 | Fields      | Descriptions                                   |
 |-------------|-------------------------------------------------|
-| true_fix       | a list of boolean indicating for each prediction (corresponding indices) whether it passed the static analysis checks |
-| eval_status       | a list of strings explanation for each prediction (corresponding indices) summarizing static analysis evaluation. Passed or derror message in case of failure |
-| exact_match       | a list of boolean indicating for each prediction (corresponding indices) whether it exactmatly matches post_reduced |
+| true_fix       | a list of booleans indicating for each prediction (corresponding indices) whether it passed the static analysis checks |
+| eval_status       | a list of strings for each prediction (corresponding indices) summarizing static analysis evaluation. Passed or error message in case of failure |
+| exact_match       | a list of booleans indicating for each prediction (corresponding indices) whether it exactly matches the target fix (post_reduced or post_file depending on the experiment) |
 
 ## Fine-tuning \& Obtaining Predictions
 
-We already provide convenient scripts to run the training and infrence. Please inspect the [training script](https://github.com/BBerabi/deepcode_ai_fix/blob/feat/add-training-and-inference-code/autofix/ml/bin/train_autofix.sh) and [inference script](https://github.com/BBerabi/deepcode_ai_fix/blob/feat/add-training-and-inference-code/autofix/ml/bin/predict_autofix.sh) carefully. 
+We already provide convenient scripts to run the training and inference. Please inspect the [training script](https://github.com/BBerabi/deepcode_ai_fix/blob/feat/add-training-and-inference-code/autofix/ml/bin/train_autofix.sh) and [inference script](https://github.com/BBerabi/deepcode_ai_fix/blob/feat/add-training-and-inference-code/autofix/ml/bin/predict_autofix.sh) carefully. 
 
-The parameters are already set to values we mostly used in the paper but depending on which experiment you want to run, you might need to adapt a few parameters. For example, if you want to train Mixtral8x7B, you might need to enable parameter efficient fine-tuning (LoRA). We provide training details for each model in paper and you can see the available arguments in the code file [args.py](https://github.com/BBerabi/deepcode_ai_fix/blob/feat/add-training-and-inference-code/autofix/ml/lib/args.py).
+The parameters are already set to values we mostly used in the paper but depending on which experiment you want to run, you might need to add/change a few parameters. For example, if you want to train `Mixtral8x7B`, you might need to enable parameter efficient fine-tuning (LoRA). We provide training details for each model in the paper and you can see the available arguments in the code file [args.py](https://github.com/BBerabi/deepcode_ai_fix/blob/feat/add-training-and-inference-code/autofix/ml/lib/args.py).
 
 ### One example for training
 
@@ -108,34 +108,31 @@ env MODEL_NAME="bigcode/starcoder" NUM_EPOCHS=60 INPUT_MAX_NUM_TOKENS=512 ./auto
 
 ### One example for inference
 
-env MODEL_NAME="\<path_to_best_model_dir_from_training_script\> MAX_NUM_TOKENS=512 BATCH_SIZE=1 ./autofix/ml/bin/predict_autofix.sh
+env MODEL_NAME="path_to_best_model_dir_from_training_script" MAX_NUM_TOKENS=512 BATCH_SIZE=1 ./autofix/ml/bin/predict_autofix.sh
 
 
-## Running the experiments against third-party LLMs.
+## Running the experiments against third-party LLMs
 
-In our paper, we also evaluate our approach in a few-shot learning setting using LLMs accessible only via an API (such as GPT-4). We also provide our code to run these experiments. There is one caveat. We have done these experiments by using a private API endpoint. If you have such an endpoint, then you can easily pass the URL as a command line argument. If not, you will have to slightly alter the code to use the OpenAI library directly instead of `requests` library as done in the code. This should be an easy change.
+In our paper, we also evaluate our approach in a few-shot learning setting using LLMs accessible only via an API (such as GPT-4). We also provide our code to run these experiments. There is one caveat. We have done these experiments by using a private API endpoint. If you have such an endpoint, then you can easily pass the URL as a command line argument. If not, you will have to slightly alter the code to use the OpenAI library directly instead of `requests` library as done in the code. This should be an easy change in the file [predict_llm.py](https://github.com/BBerabi/deepcode_ai_fix/blob/feat/add-training-and-inference-code/autofix/ml/bin/predict_llm.py).
 
 All the other details, parameters, how prompts are constructed, how fix shot examples are selected etc can be found in the code. We again provide a convenient [script](https://github.com/BBerabi/deepcode_ai_fix/blob/feat/add-training-and-inference-code/autofix/ml/bin/predict_llm.sh) to run this experiment. Please follow the instructions in the script and review the used parameter combinations depending on the model in the paper.
 
 
 ## What we publish and what we do not publish
 
-DeepCode AI Fix was developed at Snyk for commercial purposes. Hence, all the code developed was part of a large confidential codebase owned by Snyk. We can not publish the entire code for two reasons:
+DeepCode AI Fix was developed at Snyk for commercial purposes. Hence, all the code developed was part of a large confidential codebase owned by Snyk. We can not publish the entire code because it would leak a lot of confidential information about how Snyk's technology. 
 
-- It would leak a lot of confidential information about how Snyk Code analyzer works
-- It is not possible to decouple the relevant code from the codebase fully. 
-
-Hence, we proceeded with the following approach. We will only publish training and inference code written in Python. CodeReduction and evaluation code (requiring MergeBack, running the analysis and computing the metrics) will not be published. Please note that the dataset contains the reduced code snippets already if it is published. So, you have reduced code snippets for our datasets but you won't be able to apply code reduction on new samples unless you implement it yourself.
+Hence, we proceeded with the following approach. We only publish training and inference code written in Python. CodeReduction and evaluation code (requiring MergeBack, running the analysis and computing the metrics) will not be published. Please note that the dataset contains the reduced code snippets already if it is published. So, you have reduced code snippets for our datasets but you won't be able to apply code reduction on new samples unless you implement it yourself.
 
 Running the evaluation on your experiments is still possible even if we do not publish our code. Please refer to the section `Running Evaluations`.
 
 
 ## Running Evaluations
 
-The paper describes the evaluation process in detail. This section shares useful pointers on running Snyk Code on your own predictions. You have to replicate the evaluation process yourself as we do not share the code for that. The main difference is the following: The paper runs the static analyzer directly in the first party code, hence we can not share it. To evaluate your predictions, you must run the static analyzer as a third-party, meaning using its API. Snyk has a command line interface (CLI) and you can use it to run the analyzer. Once you make the anlayzer work, we advise you to create a python script to invoke CLI commands on your predictions in an automated way. If you create one, we would highly appreciate any contributions :)
+The paper describes the evaluation process in detail. This section shares useful pointers on running Snyk Code on your own predictions. You have to replicate the evaluation process yourself as we do not share the code for that. The main difference is the following: The paper runs the static analyzer directly in the first party code, hence we can not share it. To evaluate your predictions, you must run the static analyzer as a third-party, meaning using its API. Snyk has a command line interface (CLI) and you can use it to run the analyzer. Once you make the analyzer work, we advise you to create a python script to invoke CLI commands on your predictions in an automated way. If you create one, we would highly appreciate any contributions :)
 
 
-## Asking for help
+## Troubleshooting
 
 We are dedicated to create a great repository that makes it possible to
 - run experiments smoothly

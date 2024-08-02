@@ -1,2 +1,2 @@
 dc_ai_fix_env/*
-__pycache__/*
+**/__pycache__/

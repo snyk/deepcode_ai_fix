@@ -130,7 +130,6 @@ def predict_llm() -> None:
         prediction_file_path.parent.mkdir(parents=True, exist_ok=True)
         all_preds_df.to_parquet(
             str(prediction_file_path),
-            compression=const.PARQUET_COMPRESSION,
             index=False,
         )
 
