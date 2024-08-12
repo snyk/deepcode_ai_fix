@@ -12,9 +12,9 @@ You can use DeepCode AI Fix in your favorite modern IDE! You will need to instal
 DeepCode AI Fix is being actively maintained and improved! 🎉
 
 ## Paper
-During the product development process, we have decided to share our findings with the research community and published a scientific [paper](https://arxiv.org/abs/2402.13291).
+During the product development process, we decided to share our findings with the research community and published a scientific [paper](https://arxiv.org/abs/2402.13291).
 
-If you find our paper useful, please cite:
+If you find our paper useful, please cite it as follows:
 ```
 @misc{berabi2024deepcodeaifixfixing,
       title={DeepCode AI Fix: Fixing Security Vulnerabilities with Large Language Models}, 
@@ -27,12 +27,12 @@ If you find our paper useful, please cite:
 }
 ```
 
-Note that the paper presents the findings from early-2023. Since then DeepCode AI Fix was significantly improved! For example, the paper trains and evaluates only on JavaScript, whereas the current product version supports more than 5 languages including Java, Python, C/C++, Go, Apex and more. To use the latest capabilities of our product/model, please refer to the previous section on using DeepCode AI Fix in your IDE.
-
+Please note that the paper presents findings from early 2023. Since then, DeepCode AI Fix has undergone significant improvements! For example, while the paper focuses on training and evaluation using JavaScript, the current product version supports over five languages, including Java, Python, C/C++, Go, and Apex. To utilize the latest capabilities of our product, please refer to the previous section on using DeepCode AI Fix in your IDE.
 
 ## Setup
 
-You need Python3 installed on your system. After that, create a virtual environment and install the dependencies:
+To get started, ensure that Python 3 is installed on your system. Then, follow these steps to create a virtual environment and install the necessary dependencies:
+
 ```
 cd deepcode_ai_fix
 python3 -m venv dc_ai_fix_venv
@@ -40,15 +40,15 @@ source dc_ai_fix_venv/bin/activate
 pip install -r requirements.txt
 ```
 
-If you encounter any errors while installing requirements, it is likely because some libraries require certain packages installed system-wide. Please carefully review the error messages and install the system-wide dependencies according to your system.
+If you encounter any errors during the installation of the requirements, it may be due to certain libraries needing system-wide packages. Please review the error messages carefully and install the required system-wide dependencies according to your system's specifications.
 
-Also, you might have to install torch, Nvidia drivers, and Cuda according to your GPU's requirements.
+Additionally, you may need to install PyTorch, Nvidia drivers, and CUDA based on your GPU's requirements.
 
 ## Dataset and Models
 
-Since DeepCode AI Fix creates a competitive advantage for Snyk, it is still unclear whether we can publish the dataset and models. Since the original product improved a lot over the initial publication, it might be possible to expose the old model and the dataset as by now it only corresponds to a small portion of the real dataset. Please stay tuned.
+Since DeepCode AI Fix provides a competitive advantage for Snyk, it is still undecided whether we can publicly release the dataset and models. Given the significant improvements to the original product since its initial publication, we may consider releasing the older model and dataset, as they now represent only a small portion of the current, much larger dataset. Please stay tuned for updates.
 
-Dataset schemes can be found [here](https://github.com/BBerabi/deepcode_ai_fix/blob/feat/add-training-and-inference-code/autofix/ml/lib/data_schemas.py). Below, we provide detailed explanations for each schema and field.
+Dataset schemas are defined in the file `autofix/ml/lib/data_schemas.py`. Below, we provide detailed explanations for each schema and field.
 
 ### LabelledDataSchema (used for fine-tuning)
 
@@ -96,9 +96,9 @@ Everything under `PredictionSchema` and
 
 ## Fine-tuning \& Obtaining Predictions
 
-We already provide convenient scripts to run the training and inference. Please inspect the [training script](https://github.com/BBerabi/deepcode_ai_fix/blob/feat/add-training-and-inference-code/autofix/ml/bin/train_autofix.sh) and [inference script](https://github.com/BBerabi/deepcode_ai_fix/blob/feat/add-training-and-inference-code/autofix/ml/bin/predict_autofix.sh) carefully. 
+We provide convenient scripts for both training and inference. Please review the training script `autofix/ml/bin/train_autofix.sh` and inference script `autofix/ml/bin/predict_autofix.sh` carefully. 
 
-The parameters are already set to values we mostly used in the paper but depending on which experiment you want to run, you might need to add/change a few parameters. For example, if you want to train `Mixtral8x7B`, you might need to enable parameter efficient fine-tuning (LoRA). We provide training details for each model in the paper and you can see the available arguments in the code file [args.py](https://github.com/BBerabi/deepcode_ai_fix/blob/feat/add-training-and-inference-code/autofix/ml/lib/args.py).
+The parameters are preset to the values primarily used in our paper. However, depending on the experiment you wish to conduct, you may need to adjust or add a few parameters. For example, if you're training the Mixtral8x7B model, you might need to enable parameter-efficient fine-tuning (LoRA). Detailed training information for each model is available in the paper, and you can view the available arguments in the `autofix/ml/lib/args.py` file.
 
 ### One example for training
 
@@ -108,35 +108,37 @@ env MODEL_NAME="bigcode/starcoder" NUM_EPOCHS=60 INPUT_MAX_NUM_TOKENS=512 ./auto
 
 ### One example for inference
 
+```
 env MODEL_NAME="path_to_best_model_dir_from_training_script" MAX_NUM_TOKENS=512 BATCH_SIZE=1 ./autofix/ml/bin/predict_autofix.sh
-
+```
 
 ## Running the experiments against third-party LLMs
 
-In our paper, we also evaluate our approach in a few-shot learning setting using LLMs accessible only via an API (such as GPT-4). We also provide our code to run these experiments. There is one caveat. We have done these experiments by using a private API endpoint. If you have such an endpoint, then you can easily pass the URL as a command line argument. If not, you will have to slightly alter the code to use the OpenAI library directly instead of `requests` library as done in the code. This should be an easy change in the file [predict_llm.py](https://github.com/BBerabi/deepcode_ai_fix/blob/feat/add-training-and-inference-code/autofix/ml/bin/predict_llm.py).
+In our paper, we also evaluate our approach in a few-shot learning setting using LLMs that are accessible only via API (such as GPT-4). We provide the necessary code to run these experiments. However, there is one caveat: we conducted these experiments using a private API endpoint. If you have access to such an endpoint, you can easily pass the URL as a command-line argument. If not, you'll need to make a slight modification to the code to use the OpenAI library directly instead of the requests library, as implemented in the `autofix/ml/bin/predict_llm.py` file. This change should be straightforward.
 
-All the other details, parameters, how prompts are constructed, how fix shot examples are selected etc can be found in the code. We again provide a convenient [script](https://github.com/BBerabi/deepcode_ai_fix/blob/feat/add-training-and-inference-code/autofix/ml/bin/predict_llm.sh) to run this experiment. Please follow the instructions in the script and review the used parameter combinations depending on the model in the paper.
-
+All other details, including parameters, prompt construction, and the selection of few-shot examples, can be found in the code. We also provide a convenient script `autofix/ml/bin/predict_llm.sh` to run this experiment. Please follow the instructions in the script and review the parameter combinations used in the paper, depending on the model.
 
 ## What we publish and what we do not publish
 
-DeepCode AI Fix was developed at Snyk for commercial purposes. Hence, all the code developed was part of a large confidential codebase owned by Snyk. We can not publish the entire code because it would leak a lot of confidential information about how Snyk's technology. 
+DeepCode AI Fix was developed at Snyk for commercial purposes, and as such, the code is part of a large, confidential codebase owned by Snyk. We cannot publish the entire codebase, as it would expose a significant amount of confidential information about Snyk's technology.
 
-Hence, we proceeded with the following approach. We only publish training and inference code written in Python. CodeReduction and evaluation code (requiring MergeBack, running the analysis and computing the metrics) will not be published. Please note that the dataset contains the reduced code snippets already if it is published. So, you have reduced code snippets for our datasets but you won't be able to apply code reduction on new samples unless you implement it yourself.
+To address this, we have taken the following approach: We are only publishing the training and inference code written in Python. However, the CodeReduction and evaluation code (which involves tasks like MergeBack, running analyses, and computing metrics) will not be published. If the dataset is made available, it will contain the already reduced code snippets. This means you will have access to the reduced code snippets in our datasets, but you will need to implement your own code reduction if you want to apply it to new samples.
 
-Running the evaluation on your experiments is still possible even if we do not publish our code. Please refer to the section `Running Evaluations`.
-
+You can still run evaluations on your experiments even without access to our unpublished code. For more details, please refer to the next section on `Running Evaluations`.
 
 ## Running Evaluations
 
-The paper describes the evaluation process in detail. This section shares useful pointers on running Snyk Code on your own predictions. You have to replicate the evaluation process yourself as we do not share the code for that. The main difference is the following: The paper runs the static analyzer directly in the first party code, hence we can not share it. To evaluate your predictions, you must run the static analyzer as a third-party, meaning using its API. Snyk has a command line interface (CLI) and you can use it to run the analyzer. Once you make the analyzer work, we advise you to create a python script to invoke CLI commands on your predictions in an automated way. If you create one, we would highly appreciate any contributions :)
+The paper provides a detailed description of the evaluation process. This section offers guidance on running Snyk Code on your own predictions. Since we do not share the evaluation code, you will need to replicate the evaluation process yourself.
 
+The key difference is that our evaluation runs the static analyzer directly on first-party code, which we cannot share. To evaluate your predictions, you should use the static analyzer as a third party by utilizing its API. Snyk offers a command-line interface (CLI) that you can use to run the analyzer. Please follow the steps described in the [official documentation](https://docs.snyk.io/snyk-cli/scan-and-maintain-projects-using-the-cli/snyk-cli-for-snyk-code) of Snyk.
+
+Once you have the analyzer set up, we recommend creating a Python script to automate invoking CLI commands on your predictions. If you develop such a script, we would greatly appreciate any contributions you can make!
 
 ## Troubleshooting
 
-We are dedicated to create a great repository that makes it possible to
-- run experiments smoothly
-- re-produce results
-- understand the written code easily so that it can be extended
+We are committed to creating a repository that enables you to:
+- Run experiments smoothly
+- Reproduce results accurately
+- Understand and extend the code easily
 
-As mentioned earlier, we had to extract this code out of a large codebase while removing redundancies and confidential parts. Therefore, there can be unexpected issues while running the code. If you encounter any isses, do not hesitate to ask for help and if you fix any issues, please make a pull request. We are happy to improve the codebase!
+As noted earlier, we had to extract this code from a large codebase, removing redundancies and confidential parts. As a result, you might encounter unexpected issues while running the code. If you run into any problems, please don’t hesitate to ask for help. Additionally, if you resolve any issues, we encourage you to submit a pull request. We are eager to improve the codebase with your contributions!
