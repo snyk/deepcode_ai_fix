@@ -111,7 +111,6 @@ def parse_autofix_args_from_cmd() -> AutofixArgs:
         ModelArgs,
         DatasetArgs,
         transformers.TrainingArguments,
-        PipelineArgs,
         InferenceArgs,
     ]
     dataclass_types = [cast(DataClassType, arg_type) for arg_type in argument_types]

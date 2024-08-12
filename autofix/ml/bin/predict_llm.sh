@@ -35,7 +35,7 @@ if [[ -z "${MAX_NEW_TOKENS}" ]]; then
     exit 1
 fi
 
-dc_ai_fix_env/bin/activate/python3 autofix/ml/bin/predict_llm.py \
+dc_ai_fix_venv/bin/activate/python3 autofix/ml/bin/predict_llm.py \
 		--end_point="${END_POINT}" \
     --model_name="${MODEL_NAME}" \
     --data_id="${DATA_ID}" \

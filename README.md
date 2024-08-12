@@ -103,7 +103,7 @@ The parameters are preset to the values primarily used in our paper. However, de
 ### One example for training
 
 ```
-env MODEL_NAME="bigcode/starcoder" NUM_EPOCHS=60 INPUT_MAX_NUM_TOKENS=512 ./autofix/ml/bin/train_autofix.py
+env MODEL_NAME="bigcode/starcoder" NUM_EPOCHS=60 INPUT_MAX_NUM_TOKENS=512 ./autofix/ml/bin/train_autofix.sh
 ```
 
 ### One example for inference

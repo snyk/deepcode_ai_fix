@@ -19,7 +19,7 @@ NUM_BEAMS=5
 
 export TRANSFORMERS_NO_ADVISORY_WARNINGS="True"
 
-dc_ai_fix_env/bin/python3 autofix/ml/bin/predict_autofix.py \
+dc_ai_fix_venv/bin/python3 autofix/ml/bin/predict_autofix.py \
     --output_dir="/tmp/predict_autofix" \
     --per_device_eval_batch_size="${BATCH_SIZE}" \
     --data_ids="fixdb-license-all-js" \
