@@ -24,6 +24,7 @@ export TOKENIZERS_PARALLELISM="False"
 dc_ai_fix_venv/bin/python3 autofix/ml/bin/train_autofix.py \
     --output_dir="${OUTPUT_DIR}" \
     --model_name="${MODEL_NAME}" \
+    --model_id="${MODEL_NAME}" \
     --num_train_epochs="${NUM_EPOCHS}" \
     --learning_rate="1e-5" \
     --warmup_ratio=0.1 \

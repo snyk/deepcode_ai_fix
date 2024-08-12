@@ -6,6 +6,7 @@ import pandas as pd
 import peft
 import torch
 import transformers
+from sklearn.model_selection import train_test_split
 from datasets.arrow_dataset import Dataset
 from pandera.typing import DataFrame
 from peft.utils.other import prepare_model_for_kbit_training
@@ -99,8 +100,32 @@ def train_autofix() -> None:
     best_model_path = tempfile.TemporaryDirectory()
 
     # Step 1 - fetch the data.
+    train_size = args.dataset_args.train_size
     with args.training_args.main_process_first():
-        train_df, val_df = pd.read_parquet("train.parquet"), pd.read_parquet("validation.parquet")
+        train_df= pd.read_parquet("train.parquet")
+        stratify = train_df[LabelledDataSchema.rule]
+        n_unique_rules = train_df[LabelledDataSchema.rule].nunique()
+        if train_size < 1 and len(train_df) * (1.0 - train_size) < n_unique_rules:
+            stratify = None
+            logger.warning(
+                "Dataset is too sparse to split across rules. Use random split instead.",
+                data_size=len(train_df),
+                unique_rules=n_unique_rules,
+            )
+        train_df, val_df = train_test_split(
+            train_df,
+            train_size=train_size,
+            random_state=args.dataset_args.dataset_seed,
+            shuffle=True,
+            stratify=stratify,
+        )
+        logger.info(
+            "Read and split the data successfully",
+            train_size=len(train_df),
+            val_size=len(val_df),
+        )
+
+
 
     train_ds = Dataset.from_pandas(train_df)
     logger.info("Training size", num=len(train_ds))

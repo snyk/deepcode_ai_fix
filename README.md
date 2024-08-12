@@ -40,7 +40,12 @@ source dc_ai_fix_venv/bin/activate
 pip install -r requirements.txt
 ```
 
-If you encounter any errors during the installation of the requirements, it may be due to certain libraries needing system-wide packages. Please review the error messages carefully and install the required system-wide dependencies according to your system's specifications.
+If you encounter any errors during the installation of the requirements, it may be due to certain libraries needing system-wide packages. Please review the error messages carefully and install the required system-wide dependencies according to your system's specifications. For instance, you might need to install mpi packages.
+
+```
+sudo apt install libmpich-dev libopenmpi-dev
+
+```
 
 Additionally, you may need to install PyTorch, Nvidia drivers, and CUDA based on your GPU's requirements.
 
