@@ -105,6 +105,12 @@ We provide convenient scripts for both training and inference. Please review the
 
 The parameters are preset to the values primarily used in our paper. However, depending on the experiment you wish to conduct, you may need to adjust or add a few parameters. For example, if you're training the Mixtral8x7B model, you might need to enable parameter-efficient fine-tuning (LoRA). Detailed training information for each model is available in the paper, and you can view the available arguments in the `autofix/ml/lib/args.py` file.
 
+To access some models, you have to accept the license aggrement on the HuggingFace UI. If the model loading crashes due to this reason, there will be useful error messages. Please follow the instructions, create an account on HuggingFace and export your HF token.
+
+```
+export HUGGING_FACE_HUB_TOKEN="<your_token>"
+```
+
 ### One example for training
 
 ```

@@ -147,6 +147,7 @@ def train_autofix() -> None:
         )
         model_loading_kwargs.update({"quantization_config": bnb_config})
     if args.training_args.deepspeed is None:
+        logger.info("Training without deepspeed")
         model_loading_kwargs.update({"device_map": "auto"})
 
     model = ld.load_suitable_model(
