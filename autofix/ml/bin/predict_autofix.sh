@@ -25,6 +25,7 @@ dc_ai_fix_venv/bin/python3 autofix/ml/bin/predict_autofix.py \
     --data_id="test.parquet" \
     --model_id="t5-small" \
     --model_name="${LAST_MODEL_NAME_COMPONENT}" \
+    --model_id="${MODEL_NAME}" \
     --beam_size="${NUM_BEAMS}" \
     --num_return_seqs="${NUM_BEAMS}" \
     --tokenizer_max_length="${MAX_NUM_TOKENS}" \

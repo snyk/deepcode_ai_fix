@@ -106,8 +106,7 @@ def predict_autofix() -> None:
 
     # Step 1 - fetch the data.
     single_test_data = DataFrame[LabelledDataSchema](pd.read_parquet(args.dataset_args.data_id))
-    model_path = str(args.model_args.model_id)
-    logger.info("Finished fetching data and model")
+    logger.info("Finished fetching data")
 
     # Step 2 - load the model and the tokenizer.
     torch_dtype = torch.float32
@@ -119,6 +118,9 @@ def predict_autofix() -> None:
         "Loading the model", torch_dtype=torch_dtype, device=device
     )
 
+    model_path = str(args.model_args.model_id)
+    if not args.model_args.model_id:
+        raise RuntimeError("model_id can not be empty or None.")
     tokenizer = ld.load_suitable_tokenizer(model_path)
     model_loading_kwargs: dict = {
         "torch_dtype": torch_dtype,
@@ -165,7 +167,7 @@ def predict_autofix() -> None:
 
     # Step 3 - generate predictions.
     predictions = prediction_worker(
-            args, args.dataset_args.data_ids, single_test_data, pipeline, model, tokenizer # type: ignore
+            args, args.dataset_args.data_id, single_test_data, pipeline, model, tokenizer # type: ignore
     )
     # Step 4 - add the "predictions" column and save the final parquet.
     assert (
