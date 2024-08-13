@@ -102,7 +102,7 @@ def train_autofix() -> None:
     # Step 1 - fetch the data.
     train_size = args.dataset_args.train_size
     with args.training_args.main_process_first():
-        train_df= pd.read_parquet("train.parquet")
+        train_df= pd.read_parquet(args.dataset_args.data_id)
         stratify = train_df[LabelledDataSchema.rule]
         n_unique_rules = train_df[LabelledDataSchema.rule].nunique()
         if train_size < 1 and len(train_df) * (1.0 - train_size) < n_unique_rules:

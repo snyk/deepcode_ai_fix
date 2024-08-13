@@ -105,7 +105,7 @@ def predict_autofix() -> None:
     )
 
     # Step 1 - fetch the data.
-    single_test_data = DataFrame[LabelledDataSchema](pd.read_parquet("test.parquet"))
+    single_test_data = DataFrame[LabelledDataSchema](pd.read_parquet(args.dataset_args.data_id))
     model_path = str(args.model_args.model_id)
     logger.info("Finished fetching data and model")
 

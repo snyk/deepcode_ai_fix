@@ -15,10 +15,8 @@ class DatasetArgs:
         default=0.9,
         metadata={"help": "Relative train split size as float in range (0,1)"},
     )
-    data_ids: list[str] = field(
-        default_factory=lambda: [
-            "non-existent",
-        ],
+    data_id: str = field(
+        default="non-existent",
         metadata={"help": "Repeatable data id of the artifact."},
     )
     preprocessing_batch_size: int = field(

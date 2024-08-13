@@ -22,7 +22,7 @@ export TRANSFORMERS_NO_ADVISORY_WARNINGS="True"
 dc_ai_fix_venv/bin/python3 autofix/ml/bin/predict_autofix.py \
     --output_dir="/tmp/predict_autofix" \
     --per_device_eval_batch_size="${BATCH_SIZE}" \
-    --data_ids="fixdb-license-all-js" \
+    --data_id="test.parquet" \
     --model_id="t5-small" \
     --model_name="${LAST_MODEL_NAME_COMPONENT}" \
     --beam_size="${NUM_BEAMS}" \
