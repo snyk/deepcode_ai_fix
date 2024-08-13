@@ -21,7 +21,8 @@ OUTPUT_DIR="/tmp/train_autofix"
 export TRANSFORMERS_NO_ADVISORY_WARNINGS="True"
 export TOKENIZERS_PARALLELISM="False"
 
-dc_ai_fix_venv/bin/python3 autofix/ml/bin/train_autofix.py \
+# dc_ai_fix_venv/bin/python3 autofix/ml/bin/train_autofix.py \
+dc_ai_fix_venv/bin/deepspeed autofix/ml/bin/train_autofix.py \
     --output_dir="${OUTPUT_DIR}" \
     --model_name="${MODEL_NAME}" \
     --model_id="${MODEL_NAME}" \

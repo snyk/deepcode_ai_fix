@@ -178,6 +178,7 @@ def predict_autofix() -> None:
         "predictions.parquet",
         index=False,
     )
+    logger.info("Done generating predictions")
 
 
 if __name__ == "__main__":

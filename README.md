@@ -114,7 +114,7 @@ export HUGGING_FACE_HUB_TOKEN="<your_token>"
 ### One example for training
 
 ```
-env MODEL_NAME="bigcode/starcoder" NUM_EPOCHS=60 INPUT_MAX_NUM_TOKENS=512 ./autofix/ml/bin/train_autofix.sh
+env MODEL_NAME="bigcode/starcoderbase-3b" NUM_EPOCHS=60 INPUT_MAX_NUM_TOKENS=512 ./autofix/ml/bin/train_autofix.sh
 ```
 
 ### One example for inference
