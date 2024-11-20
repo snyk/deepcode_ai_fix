@@ -1,0 +1,31 @@
+version: 2.1
+
+orbs:
+  prodsec: snyk/prodsec-orb@1
+  deploy: snyk/deploy@3  
+
+jobs:
+  security-scans:
+    docker:
+      - image: cimg/base:stable
+    resource_class: small
+    steps:
+      - checkout
+      - prodsec/security_scans:
+          mode: auto
+
+workflows:
+  secret:
+    jobs:
+      - prodsec/secrets-scan: # DO NOT REMOVE OR MOVE THIS LINE
+          name: Scan repository for secrets
+          context:
+            - snyk-bot-slack
+          trusted-branch: main
+          channel: team-machine-learning-private
+  security:
+    jobs:
+      - security-scans:
+          name: "Security Scans"
+          context:
+            - analysis_machine-intelligence

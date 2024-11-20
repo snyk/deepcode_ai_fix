@@ -1,0 +1,11 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: deepcode_ai_fix
+  annotations:
+    github.com/project-slug: snyk/deepcode_ai_fix
+    github.com/team-slug: snyk/machine-intelligence
+spec:
+  type: examples
+  lifecycle: "-"
+  owner: machine-intelligence
