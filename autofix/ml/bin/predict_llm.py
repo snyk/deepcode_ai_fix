@@ -36,8 +36,8 @@ def predict_llm() -> None:
     args = LLMInferenceArgs.parse()
     data_id = args.data_id
 
-    all_test_data = pd.read_parquet("test.parquet")
-    all_train_data = pd.read_parquet("train.parquet")
+    all_test_data = pd.read_parquet("data/paper_test.parquet")
+    all_train_data = pd.read_parquet("data/paper_train.parquet")
 
     logger.info(
         "Starting inference with settings",

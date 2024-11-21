@@ -39,7 +39,7 @@ dc_ai_fix_venv/bin/deepspeed autofix/ml/bin/train_autofix.py \
     --remove_unused_columns="False" \
     --logging_steps=1 \
     --seed=42 \
-    --data_id="train.parquet" \
+    --data_id="data/paper_train.parquet" \
     --tokenizer_max_length="${INPUT_MAX_NUM_TOKENS}" \
     --max_new_tokens="${INPUT_MAX_NUM_TOKENS}" \
     --per_device_train_batch_size=4 \

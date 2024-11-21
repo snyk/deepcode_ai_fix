@@ -115,6 +115,8 @@ To access some models, you have to accept the license aggrement on the HuggingFa
 export HUGGING_FACE_HUB_TOKEN="<your_token>"
 ```
 
+Please note that the example commands below use relative paths for reading the datasets from the `data` directory inside repo. This may or may not work depending on your setup. Please double check the arguments in the shell scripts and adjust where needed.
+
 ### One example for training
 
 ```
