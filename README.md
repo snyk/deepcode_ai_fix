@@ -2,6 +2,10 @@
 
 DeepCode AI Fix is a state-of-the-art product for automatically fixing security vulnerabilities and coding errors in software systems. The key idea is to leverage program analysis to limit the LLM’s attention mechanism on the portions of code needed to perform the fix, drastically reducing the amount of required training data. Concretely, for both training and inference, rather than feeding the entire program to the LLM, we reduce its code to a much shorter snippet that contains the reported defect together with the necessary context – and use that instead.
 
+## DeepCode AI Fix has gone GA! 🎉🎉🎉
+
+After staying one and a half years in Early Access and Beta, DeepCode AI Fix has gone GA on the 29th of October 2024. See the [announcement](https://snyk.io/blog/find-auto-fix-prioritize-intelligently-snyks-ai-powered-code/) for more information and see the next section to set up and start using DeepCode AI Fix in your IDE!
+
 ## How can I use DeepCode AI Fix?
 
 You can use DeepCode AI Fix in your favorite modern IDE! You will need to install Snyk IDE Extension and enable AI Fix suggestions in your Snyk account. Please refer to the documentation on Snyk's website.
