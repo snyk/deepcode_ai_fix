@@ -1,3 +1,7 @@
+# ARCHIVED GIT REPOSITORY
+
+This repository is unmaintained and set to read-only.
+
 # DeepCode AI Fix: Fixing Security Vulnerabilities with Large Language Models
 
 DeepCode AI Fix is a state-of-the-art product for automatically fixing security vulnerabilities and coding errors in software systems. The key idea is to leverage program analysis to limit the LLM’s attention mechanism on the portions of code needed to perform the fix, drastically reducing the amount of required training data. Concretely, for both training and inference, rather than feeding the entire program to the LLM, we reduce its code to a much shorter snippet that contains the reported defect together with the necessary context – and use that instead.
